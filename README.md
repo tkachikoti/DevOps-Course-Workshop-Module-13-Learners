@@ -53,10 +53,10 @@ logging.basicConfig(level=logging.INFO)
 For the purpose of this workshop it is fine to directly push changes to the app.
 In a real setting you are likely to need to push changes to Git and get your CI/CD server to do a release.
 
-In the root of the project run `az login` then `az webapp up -n {App Service name} && az webapp restart`. {App Service name} is name of the App Service resource in the Azure Portal, which is also the first part of the web address (e.g. `XXX-order-processing-app`)
+In the root of the project run `az login` then `az webapp up -n {App Service name} && az webapp restart` (or `(az webapp up -n {App Service name}) -and (az webapp restart)` if using a version of PowerShell before PowerShell7). {App Service name} is name of the App Service resource in the Azure Portal, which is also the first part of the web address (e.g. `XXX-order-processing-app`)
 This will push your current code to the server and restart it.
 
-Subsequent deploys can be done with just `az webapp up && az webapp restart`, as your login and the App Service name name will be remembered.
+Subsequent deploys can be done with just `az webapp up && az webapp restart` (or `(az webapp up) -and (az webapp restart)` for PowerShell), as your login and the App Service name name will be remembered.
 
 ## Investigate and fix
 
@@ -110,6 +110,7 @@ Find the connection string (containing a sensitive "instrumentation key") on the
 > Don't forget to click the `Save` button at the top of the Configuration page after making changes!
 
 To actually send logs to Application Insights you'll need to add the Python packages `opencensus-ext-azure` and `opencensus-ext-flask` to requirements.txt.
+It's a good habit to specify a version when adding these: you can find the latest version specified on the Python Package Index page for [the Azure extension](https://pypi.org/project/opencensus-ext-azure/) and [the Flask extension](https://pypi.org/project/opencensus-ext-flask/) respectively.
 
 Next, add the middleware to `app.py` by adapting this sample code: <https://docs.microsoft.com/en-us/azure/azure-monitor/app/opencensus-python-request#tracking-flask-applications>. That middleware will log all requests to your Flask app (like every time you view the webpage) and the `AzureExporter` will send those logs to Application Insights.
 
