@@ -1,0 +1,26 @@
+name: Deploy
+on: 
+  push
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    env:
+        # REPLACE THIS
+        DOCKERHUB_USERNAME: corndeldevopscourse
+        # SET THESE IN GITHUB
+        DOCKERHUB_TOKEN: '${{ secrets.DOCKERHUB_TOKEN }}'
+        AZURE_WEBHOOK: '${{ secrets.AZURE_WEBHOOK }}'
+    # DECIDE WHETHER YOU WANT A BRANCH CHECK
+    # if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Build image
+        run: docker build --tag ${DOCKERHUB_USERNAME}/m13-order-processing-app --target production .
+      - name: Docker login
+        run: echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+      - name: Push image
+        run: docker push ${DOCKERHUB_USERNAME}/m13-order-processing-app
+      - name: Trigger deployment
+        run: curl -dHf -X POST "$AZURE_WEBHOOK"
