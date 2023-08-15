@@ -11,9 +11,12 @@ jobs:
         # SET THESE IN GITHUB
         DOCKERHUB_TOKEN: '${{ secrets.DOCKERHUB_TOKEN }}'
         AZURE_WEBHOOK: '${{ secrets.AZURE_WEBHOOK }}'
-    # DECIDE WHETHER YOU WANT A BRANCH CHECK
+    # DECIDE WHETHER YOU WANT A BRANCH CHECK - if so remove the other "if"
     # if: github.ref == 'refs/heads/master'
+    if: github.repository != 'CorndelWithSoftwire/DevOps-Course-Workshop-Module-13-Learners'
     steps:
+      - name: test
+        run: echo ${{ github.repository }}
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Build image
