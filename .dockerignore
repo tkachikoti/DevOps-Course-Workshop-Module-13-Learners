@@ -3,3 +3,7 @@ __pycache__/
 .env
 .azure
 .venv
+
+Dockerfile
+.github
+.gitlab-ci.yml

@@ -50,13 +50,36 @@ logging.basicConfig(level=logging.INFO)
 
 ## Deploy your changes
 
-For the purpose of this workshop it is fine to directly push changes to the app.
-In a real setting you are likely to need to push changes to Git and get your CI/CD server to do a release.
+For the purpose of this workshop there is a default CD pipeline configured in `.github/workflows/deploy.yml` or `.gitlab-ci.yml` depending on your platform. In order to make use of this you will need to:
+* Update that pipeline file to contain your DockerHub username
+* In Azure, under your App Service's "Deployment Center", update the image name/tag to `<your_dockerhub_username>/m13-order-processing-app`
+* Grab the "Webhook URL" from the Deployment Center and add it to your CI pipeline secrets/variables as `AZURE_WEBHOOK`
+  * If using GitLab, make sure that the "Expand variable" option is off, and the secret is masked and available to your branch
+* [Generate a DockerHub token](https://docs.docker.com/docker-hub/access-tokens/#create-an-access-token) and set it in the repository pipeline secrets/variables under `DOCKERHUB_TOKEN`
 
-In the root of the project run `az login` then `az webapp up -n {App Service name} && az webapp restart` (or `(az webapp up -n {App Service name}) -and (az webapp restart)` if using a version of PowerShell before PowerShell7). {App Service name} is name of the App Service resource in the Azure Portal, which is also the first part of the web address (e.g. `XXX-order-processing-app`)
-This will push your current code to the server and restart it.
+When you're ready, push those changes to your fork which will update your DockerHub image and notify your server to pull the latest and restart.
 
-Subsequent deploys can be done with just `az webapp up && az webapp restart` (or `(az webapp up) -and (az webapp restart)` for PowerShell), as your login and the App Service name name will be remembered.
+If you find this step slow, or just prefer to release manually, then you will still need to update the App Service but can always build & push the latest image directly 
+```bash
+docker build --tag ${DOCKERHUB_USERNAME}/m13-order-processing-app --target production .
+docker push ${DOCKERHUB_USERNAME}/m13-order-processing-app
+```
+
+You'll also need to trigger the webhook - you can do this directly, or you can register that with DockerHub to do that for you.
+
+<details><summary>Register a webhook in DockerHub</summary>
+
+DockerHub allows you to register webhooks on individual image repositories, you can find that through:
+1) Signing in
+1) Navigating to "My Profile" from the dropdown by your username
+1) Selecting the relevant image repository
+1) Selecting "Manage Repository"
+1) Select the "Webhooks" tab and entering appropriate details
+
+Or alternatively by jumping to this URL with the appropriate values completed:
+
+https://hub.docker.com/repository/docker/\<YOUR_USERNAME\>/\<IMAGE_NAME\>/webhooks
+</details>
 
 ## Investigate and fix
 

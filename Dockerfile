@@ -19,9 +19,6 @@ COPY . /app
 
 WORKDIR /app
 
-# Use a launch script to support both env variable expansion
-# And command line arguments
-ENTRYPOINT flask run --host 0.0.0.0 --port "${PORT}" "$@"
 
 ####################################
 # Production Image
@@ -30,9 +27,15 @@ FROM base as production
 ENV FLASK_ENV=production
 EXPOSE 80
 
+ENTRYPOINT gunicorn "app:app" -b 0.0.0.0:$PORT "$@"
+
 ####################################
 # Local Development Image
 FROM base as development
 
 ENV FLASK_ENV=development
 EXPOSE 80
+
+# Use a launch script to support both env variable expansion
+# And command line arguments
+ENTRYPOINT flask run --host 0.0.0.0 --port "${PORT}" "$@"
