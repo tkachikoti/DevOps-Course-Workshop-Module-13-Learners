@@ -9,7 +9,6 @@ from products import create_product_download
 import requests
 app = Flask(__name__)
 app.config.from_object(Config)
-app.logger.setLevel(app.config['LOG_LEVEL'])
 
 initialise_database(app)
 initialise_scheduled_jobs(app)

@@ -26,4 +26,4 @@ jobs:
       - name: Push image
         run: docker push ${DOCKERHUB_USERNAME}/m13-order-processing-app
       - name: Trigger deployment
-        run: curl -dHf -X POST "$AZURE_WEBHOOK"
+        run: curl --fail-with-body -X POST "$AZURE_WEBHOOK"
