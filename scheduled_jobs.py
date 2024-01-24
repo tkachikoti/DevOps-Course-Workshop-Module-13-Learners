@@ -35,11 +35,6 @@ def process_orders(app):
             json=payload
         )
 
-        try:
-            app.logger.info("Response from finance package:" + str(response.json()))
-        except ValueError as e:
-            app.logger.info("Response from finance package - ERROR:" + str(e))
-
         response.raise_for_status()
 
         order.set_as_processed()
