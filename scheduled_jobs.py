@@ -35,6 +35,8 @@ def process_orders(app):
             json=payload
         )
 
+        app.logger.info("Response from finance package:" + str(response.json()))
+
         response.raise_for_status()
 
         order.set_as_processed()
