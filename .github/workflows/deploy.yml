@@ -6,7 +6,6 @@ jobs:
   my-job:
     runs-on: ubuntu-latest
     env:
-        # REPLACE THIS
         DOCKERHUB_USERNAME: '${{ secrets.DOCKERHUB_USERNAME }}'
         # SET THESE IN GITHUB
         DOCKERHUB_TOKEN: '${{ secrets.DOCKERHUB_TOKEN }}'
